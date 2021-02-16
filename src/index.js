@@ -15,7 +15,9 @@ class Chess {
       for (let y = 7; y >= 0; y--) {
         board += '<tr>';
         for(let x = 0; x <= 7; x++) {
-          board += '<td></td>';
+          let classBoardTd;
+          classBoardTd = (x + y) % 2 ? "white" : "black";
+          board += '<td class="'+ classBoardTd +'"></td>';
         }
         board += '</tr>';
       }

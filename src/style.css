@@ -1,15 +1,24 @@
 table {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
   text-align: left;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 5px;
-  background: #ECE9E0;
+  background: #000000;
   color: #656665;
-  border: 16px solid #ECE9E0;
+  border: 10px solid #ECE9E0;
   border-radius: 20px;
   }
 
   td {
+  padding: 10px;
+  width: 45px;
+  height: 45px;
+  }
+
+  td.black{
+    background: black;
+  }
+
+  td.white {
     background: #F5D7BF;
-    padding: 10px;
-    }
+  }
