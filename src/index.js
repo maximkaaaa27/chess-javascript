@@ -19,6 +19,19 @@ class Chess {
     this.showBoard();
   }
 
+  showFigure(FigureArr) {
+      switch(FigureArr) {
+        case 'K' : return '&#9812;'; case 'k' : return '&#9818';
+        case 'Q' : return '&#9813;'; case 'q' : return '&#9819';
+        case 'R' : return '&#9814;'; case 'r' : return '&#9820';
+        case 'B' : return '&#9815;'; case 'b' : return '&#9821';
+        case 'N' : return '&#9816;'; case 'n' : return '&#9822';
+        case 'P' : return '&#9817;'; case 'p' : return '&#9823';
+        default : return '&nbsp;';
+
+      }
+  }
+
 
   showBoard () {
     let board = '<table>';
@@ -29,7 +42,7 @@ class Chess {
           let classBoardTd;
           classBoardTd = (x + y) % 2 ? "white" : "black";
           board += '<td class="'+ classBoardTd +'">';
-          board += this.chessFigureArray[x][y]; 
+          board += this.showFigure(this.chessFigureArray[x][y]); 
           board += '</td>';
         }
         board += '</tr>';
