@@ -4,7 +4,7 @@ table {
   border-collapse: collapse;
   border-spacing: 5px;
   background: #000000;
-  color: #656665;
+  color: #000000;
   border: 10px solid #ECE9E0;
   border-radius: 20px;
   }
@@ -13,10 +13,11 @@ table {
   padding: 10px;
   width: 45px;
   height: 45px;
+  text-align: center;
   }
 
   td.black{
-    background: black;
+    background: rgb(216, 161, 42);
   }
 
   td.white {
