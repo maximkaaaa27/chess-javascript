@@ -16,6 +16,16 @@ class Chess {
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'],
    
     ];
+    this.topBoardArray = [
+      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      [' ', '1', '2', '2', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    ];
     this.showBoard();
   }
 
@@ -39,8 +49,16 @@ class Chess {
       for (let y = 7; y >= 0; y--) {
         board += '<tr>';
         for(let x = 0; x <= 7; x++) {
+
           let classBoardTd;
-          classBoardTd = (x + y) % 2 ? "white" : "black";
+
+          if (this.topBoardArray[x][y] === ' ') {
+            
+            classBoardTd = (x + y) % 2 ? "white" : "black";
+
+            } else
+
+          classBoardTd = this.topBoardArray[x][y] === '1' ? 'green': 'red';
           board += '<td class="'+ classBoardTd +'">';
           board += this.showFigure(this.chessFigureArray[x][y]); 
           board += '</td>';

@@ -24,3 +24,11 @@ table {
   td.white {
     background: #F5D7BF;
   }
+
+  td.green {
+    background: green;
+  }
+
+  td.red {
+    background: rgb(184, 149, 149);
+  }
