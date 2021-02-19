@@ -5,6 +5,7 @@ class Chess {
 
   constructor(element) {
     this.el = element;
+    this.moveClassColor = 'white';
     this.chessFigureArray = [
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'], 
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
@@ -20,13 +21,32 @@ class Chess {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', '1', '2', '2', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     ];
     this.showBoard();
+  }
+
+
+  markMoveFrom () {
+    for (let x = 0; x <= 7; x++) {
+        for(let y=0; y <=7; y++) {
+            if (this.canMoveFrom(x,y)) this.topBoardArray[x][y] = 1;
+        }
+    }
+  }
+
+  canMoveFrom (x,y) {
+    return this.getColor(x,y) === this.moveClassColor;
+  }
+
+  getColor(x,y) {
+    const figure = this.chessFigureArray[x][y];
+      if(figure === ' ') return'';
+        return (figure.toUpperCase() === figure) ? 'white' : 'black';
   }
 
   showFigure(FigureArr) {
@@ -45,6 +65,8 @@ class Chess {
 
   showBoard () {
     let board = '<table>';
+
+    this.markMoveFrom();
 
       for (let y = 7; y >= 0; y--) {
         board += '<tr>';
