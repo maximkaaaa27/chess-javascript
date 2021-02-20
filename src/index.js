@@ -6,6 +6,8 @@ class Chess {
   constructor(element) {
     this.el = element;
     this.moveClassColor = 'white';
+    this.moveFromX = ' ';
+    this.moveFromY = ' ';
     this.chessFigureArray = [
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'], 
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
@@ -28,6 +30,7 @@ class Chess {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     ];
     this.showBoard();
+    this.addEventTable();
   }
 
 
@@ -39,8 +42,24 @@ class Chess {
     }
   }
 
+  markMoveTo () {
+    for (let x = 0; x <= 7; x++) {
+        for(let y=0; y <=7; y++) {
+            if (this.canMoveTo(x,y)) this.topBoardArray[x][y] = 2;
+            
+        }
+    }
+  }
+
   canMoveFrom (x,y) {
     return this.getColor(x,y) === this.moveClassColor;
+  }
+
+  canMoveTo (x,y) {
+    
+    if( this.chessFigureArray[x][y] === ' ') return true;
+
+    return this.getColor(x,y) != this.moveClassColor;
   }
 
   getColor(x,y) {
@@ -64,7 +83,7 @@ class Chess {
 
 
   showBoard () {
-    let board = '<table>';
+    let board = '<table class="main-board">';
 
     this.markMoveFrom();
 
@@ -80,8 +99,8 @@ class Chess {
 
             } else
 
-          classBoardTd = this.topBoardArray[x][y] === '1' ? 'green': 'red';
-          board += '<td class="'+ classBoardTd +'">';
+          classBoardTd = this.topBoardArray[x][y] === 1 ? 'green': 'red';
+          board += `<td class="${classBoardTd}" id="${x}${y}">`;
           board += this.showFigure(this.chessFigureArray[x][y]); 
           board += '</td>';
         }
@@ -90,7 +109,42 @@ class Chess {
 
     this.el.innerHTML = board;
 
+
+
   }
+
+  addEventTable () {
+    const table = document.querySelector('.main-board');
+    table.addEventListener('click', (event) => {
+        this.clickbox(event.target.getAttribute('id'));
+    });
+
+  }
+
+  clickbox(tdId) {
+    const x = parseInt(tdId[0]);
+    const y = parseInt(tdId[1]);
+
+    
+
+    if (this.topBoardArray[x][y] === 1) this.clickboxFrom(x, y);
+
+    if(this.topBoardArray[x][y] === 2) this.clickboxTo(x, y);
+
+  }
+
+  clickboxFrom(x, y) {
+    this.moveFromX = x;
+    this.moveFromY = y;
+    this.markMoveTo();
+    this.showBoard();
+
+  }
+
+  clickboxTo(x, y) {
+
+  }
+
 }
 
 new Chess(document.querySelector('#board'));
