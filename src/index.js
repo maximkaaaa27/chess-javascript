@@ -30,9 +30,17 @@ class Chess {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     ];
     this.showBoard();
-    this.markMoveFrom();
+
   }
 
+  clearTop() {
+    for (let x = 0; x <= 7; x++) {
+      for(let y = 0; y <= 7; y++) {
+          this.topBoardArray[x][y] = ' ';
+      }
+    }
+    return;
+  }
 
   markMoveFrom () {
     for (let x = 0; x <= 7; x++) {
@@ -88,6 +96,8 @@ class Chess {
   showBoard () {
     let board = '<table class="main-board">';
 
+    this.markMoveFrom();
+
       for (let y = 7; y >= 0; y--) {
         board += '<tr>';
 
@@ -107,9 +117,9 @@ class Chess {
         }
         board += '</tr>';
       }
-
     this.el.innerHTML = board;
     this.addEventTable();
+
 
   }
 
@@ -149,6 +159,7 @@ class Chess {
   clickboxTo(x, y) {
     this.chessFigureArray[x][y] = this.chessFigureArray[this.moveFromX][this.moveFromY];
     this.chessFigureArray[this.moveFromX][this.moveFromY] = ' ';
+    this.clearTop();
     this.turnMove();
     this.markMoveFrom();
     this.showBoard();
