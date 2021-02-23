@@ -1,8 +1,5 @@
 table {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-  border-collapse: collapse;
-  border: 25px solid #a1abb3;
-  border-radius: 30px;
+  border: 25px solid #00000000;
   }
 
   td {

@@ -6,8 +6,8 @@ class Chess {
   constructor(element) {
     this.el = element;
     this.moveClassColor = 'white';
-    this.moveFromX = ' ';
-    this.moveFromY = ' ';
+    this.moveFromX = '';
+    this.moveFromY = '';
     this.chessFigureArray = [
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'], 
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
@@ -30,7 +30,6 @@ class Chess {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     ];
     this.showBoard();
-    this.addEventTable();
   }
 
 
@@ -42,31 +41,34 @@ class Chess {
     }
   }
 
+
   markMoveTo () {
     for (let x = 0; x <= 7; x++) {
-        for(let y=0; y <=7; y++) {
+        for(let y = 0; y <= 7; y++) {
             if (this.canMoveTo(x,y)) this.topBoardArray[x][y] = 2;
             
         }
     }
   }
 
+
   canMoveFrom (x,y) {
     return this.getColor(x,y) === this.moveClassColor;
   }
 
-  canMoveTo (x,y) {
-    
-    if( this.chessFigureArray[x][y] === ' ') return true;
 
+  canMoveTo (x,y) {
+    if( this.chessFigureArray[x][y] === ' ') return true;
     return this.getColor(x,y) != this.moveClassColor;
   }
 
+
   getColor(x,y) {
     const figure = this.chessFigureArray[x][y];
-      if(figure === ' ') return'';
+      if(figure === ' ') return '';
         return (figure.toUpperCase() === figure) ? 'white' : 'black';
   }
+
 
   showFigure(FigureArr) {
       switch(FigureArr) {
@@ -86,6 +88,7 @@ class Chess {
     let board = '<table class="main-board">';
 
     this.markMoveFrom();
+    
 
       for (let y = 7; y >= 0; y--) {
         board += '<tr>';
@@ -108,15 +111,17 @@ class Chess {
       }
 
     this.el.innerHTML = board;
-
-
+    this.addEventTable();
 
   }
 
+
   addEventTable () {
     const table = document.querySelector('.main-board');
+
     table.addEventListener('click', (event) => {
-        this.clickbox(event.target.getAttribute('id'));
+        if (event.target === table) return;
+      this.clickbox(event.target.getAttribute('id'));
     });
 
   }
@@ -125,24 +130,30 @@ class Chess {
     const x = parseInt(tdId[0]);
     const y = parseInt(tdId[1]);
 
-    
+    if (this.topBoardArray[x][y] === 1) {
+      this.clickboxFrom(x, y);
+    }
 
-    if (this.topBoardArray[x][y] === 1) this.clickboxFrom(x, y);
-
-    if(this.topBoardArray[x][y] === 2) this.clickboxTo(x, y);
-
+    if(this.topBoardArray[x][y] === 2) {
+      this.clickboxTo(x, y);
+    }
   }
 
   clickboxFrom(x, y) {
     this.moveFromX = x;
     this.moveFromY = y;
+
     this.markMoveTo();
     this.showBoard();
 
   }
 
   clickboxTo(x, y) {
-
+    this.chessFigureArray[x][y] = this.chessFigureArray[this.moveFromX][this.moveFromY];
+    this.chessFigureArray[this.moveFromX][this.moveFromY] = ' ';
+    this.markMoveFrom();
+    this.showBoard();
+    
   }
 
 }
