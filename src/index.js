@@ -30,12 +30,13 @@ class Chess {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     ];
     this.showBoard();
+    this.markMoveFrom();
   }
 
 
   markMoveFrom () {
     for (let x = 0; x <= 7; x++) {
-        for(let y=0; y <=7; y++) {
+        for(let y = 0; y <= 7; y++) {
             if (this.canMoveFrom(x,y)) this.topBoardArray[x][y] = 1;
         }
     }
@@ -58,7 +59,7 @@ class Chess {
 
 
   canMoveTo (x,y) {
-    if( this.chessFigureArray[x][y] === ' ') return true;
+    if (this.chessFigureArray[x][y] === ' ') return true;
     return this.getColor(x,y) != this.moveClassColor;
   }
 
@@ -87,25 +88,22 @@ class Chess {
   showBoard () {
     let board = '<table class="main-board">';
 
-    this.markMoveFrom();
-    
-
       for (let y = 7; y >= 0; y--) {
         board += '<tr>';
-        for(let x = 0; x <= 7; x++) {
 
+        for(let x = 0; x <= 7; x++) {
           let classBoardTd;
 
-          if (this.topBoardArray[x][y] === ' ') {
-            
+          if (this.topBoardArray[x][y] === ' ') { 
             classBoardTd = (x + y) % 2 ? "white" : "black";
-
-            } else
-
-          classBoardTd = this.topBoardArray[x][y] === 1 ? 'green': 'red';
+            } else {
+            classBoardTd = this.topBoardArray[x][y] === 1 ? 'green': 'red';
+            }
+          
           board += `<td class="${classBoardTd}" id="${x}${y}">`;
           board += this.showFigure(this.chessFigureArray[x][y]); 
           board += '</td>';
+            
         }
         board += '</tr>';
       }
@@ -151,9 +149,14 @@ class Chess {
   clickboxTo(x, y) {
     this.chessFigureArray[x][y] = this.chessFigureArray[this.moveFromX][this.moveFromY];
     this.chessFigureArray[this.moveFromX][this.moveFromY] = ' ';
+    this.turnMove();
     this.markMoveFrom();
     this.showBoard();
     
+  }
+
+  turnMove() {
+    this.moveClassColor = (this.moveClassColor === 'white') ? 'black': 'white';
   }
 
 }
