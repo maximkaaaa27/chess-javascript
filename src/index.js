@@ -50,9 +50,82 @@ class Chess {
       return true;
   }
 
-  isCorrectMove() {
+  isCorrectMove(sx, sy, dx, dy) {
+
+    const figure = this.chessFigureArray[sx][sy];
+
+    if (this.isKing(figure)) {
+      return this.isCorrectKingMove (sx, sy, dx, dy);
+    }    
+    if (this.isQueen(figure)) {
+      return this.isCorrectQueenMove (sx, sy, dx, dy);
+    }
+    if (this.isBishop(figure)) {
+      return this.isCorrectBishopMove (sx, sy, dx, dy);
+    }    
+    if (this.isKnight(figure)) {
+      return this.isCorrectKnightMove (sx, sy, dx, dy);
+    }    
+    if (this.isRook(figure)) {
+      return this.isCorrectRookMove (sx, sy, dx, dy);
+    }    
+    if (this.isPawn(figure)) {
+      return this.isCorrectPawnMove (sx, sy, dx, dy);
+    }    
+         
     return true;
   }
+  
+
+  isKing(figure) {
+    return figure.toUpperCase() === 'K';
+  }
+
+  isQueen(figure) {
+    return figure.toUpperCase() === 'Q';
+  }
+
+  isBishop(figure) {
+    return figure.toUpperCase() === 'B';
+  }
+
+  isKnight(figure) {
+    return figure.toUpperCase() === 'N';
+  }
+
+  isRook(figure) {
+    return figure.toUpperCase() === 'R';
+  }
+
+  isPawn(figure) {
+    return figure.toUpperCase() === 'P';
+  }
+
+
+  isCorrectKingMove(sx, sy, dx, dy) {
+    return true;
+  }
+
+  isCorrectQueenMove(sx, sy, dx, dy) {
+    return true;
+  }
+
+  isCorrectBishopMove(sx, sy, dx, dy) {
+    return true;
+  }
+
+  isCorrectKnightMove(sx, sy, dx, dy) {
+    return true;
+  }
+
+  isCorrectRookMove(sx, sy, dx, dy) {
+    return true;
+  }
+
+  isCorrectPawnMove(sx, sy, dx, dy) {
+    return true;
+  }
+
 
   markMoveFrom () {
     for (let sx = 0; sx <= 7; sx++) {
@@ -70,7 +143,7 @@ class Chess {
   markMoveTo () {
     for (let x = 0; x <= 7; x++) {
         for(let y = 0; y <= 7; y++) {
-            if (this.canMoveTo(x,y)) this.topBoardArray[x][y] = 2;
+            if (this.canMove(this.moveFromX, this.moveFromY, x, y)) this.topBoardArray[x][y] = 2;
             
         }
     }
