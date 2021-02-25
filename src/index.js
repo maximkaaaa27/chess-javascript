@@ -115,7 +115,12 @@ class Chess {
   }
 
   isCorrectKnightMove(sx, sy, dx, dy) {
+    if (Math.abs(dx - sx) === 1 && Math.abs (dy - sy) === 2)
     return true;
+    if (Math.abs (dx - sx) === 2 && Math.abs (dy - sy) === 1)
+    return true;
+
+  return false;
   }
 
   isCorrectRookMove(sx, sy, dx, dy) {
