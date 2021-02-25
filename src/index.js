@@ -42,11 +42,27 @@ class Chess {
     return;
   }
 
+
+  canMove(sx, sy, dx, dy) {
+    if (!this.canMoveFrom(sx, sy)) return false;
+    if (!this.canMoveTo(dx, dy)) return false;
+    if (!this.isCorrectMove(sx, sy, dx, dy)) return false;
+      return true;
+  }
+
+  isCorrectMove() {
+    return true;
+  }
+
   markMoveFrom () {
-    for (let x = 0; x <= 7; x++) {
-        for(let y = 0; y <= 7; y++) {
-            if (this.canMoveFrom(x,y)) this.topBoardArray[x][y] = 1;
-        }
+    for (let sx = 0; sx <= 7; sx++) {
+        for(let sy = 0; sy <= 7; sy++) {
+          for (let dx = 0; dx <= 7; dx++) {
+            for(let dy = 0; dy <= 7; dy++) {
+            if (this.canMove(sx, sy, dx, dy)) this.topBoardArray[sx][sy] = 1;
+          }
+        } 
+      }
     }
   }
 
