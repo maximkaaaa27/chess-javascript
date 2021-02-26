@@ -125,23 +125,34 @@ class Chess {
   }
 
   isCorrectRookMove(sx, sy, dx, dy) {
-    let deltaX = 0;
-    let deltaY = 0;
-
-    if (dx > sx) deltaX = +1;
-    if (dx < sx) deltaX = -1;
-    if (dy > sy) deltaY = +1;
-    if (dy < sy) deltaY = -1;
+    let deltaX = Math.sign(dx - sx);
+    let deltaY = Math.sign(dy - sy);
 
     if (Math.abs(deltaX) + Math.abs(deltaY) != 1) return false;
 
-  return true;
+    do {
+      sx += deltaX;
+      sy += deltaY;
+        if (sx === dx && sy === dy) //Test Ending Move
+        return true;
+
+        if (this.chessFigureArray[sx][sy] != ' ')
+        return false;
+    } while(this.onMap(sx, sy));
+
+    return true;
+    
+  
   }
 
   isCorrectPawnMove(sx, sy, dx, dy) {
     return true;
   }
 
+
+  onMap(x, y) {
+    return (x >= 0 && x <= 7 && y >=0 && y <=7);
+  }
 
   markMoveFrom () {
     for (let sx = 0; sx <= 7; sx++) {
