@@ -125,7 +125,17 @@ class Chess {
   }
 
   isCorrectRookMove(sx, sy, dx, dy) {
-    return true;
+    let deltaX = 0;
+    let deltaY = 0;
+
+    if (dx > sx) deltaX = +1;
+    if (dx < sx) deltaX = -1;
+    if (dy > sy) deltaY = +1;
+    if (dy < sy) deltaY = -1;
+
+    if (Math.abs(deltaX) + Math.abs(deltaY) != 1) return false;
+
+  return true;
   }
 
   isCorrectPawnMove(sx, sy, dx, dy) {
