@@ -103,7 +103,8 @@ class Chess {
 
 
   isCorrectKingMove(sx, sy, dx, dy) {
-    return true;
+    if (Math.abs(dx -sx) <= 1 && Math.abs(dy-sy) <= 1) return true;
+    return false;
   }
 
   isCorrectQueenMove(sx, sy, dx, dy) {
