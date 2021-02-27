@@ -112,7 +112,19 @@ class Chess {
   }
 
   isCorrectBishopMove(sx, sy, dx, dy) {
-    return true;
+    let deltaX = Math.sign(dx - sx);
+    let deltaY = Math.sign(dy - sy);
+
+    if (Math.abs(deltaX) + Math.abs(deltaY) != 2) return false;
+
+    do {
+      sx += deltaX;
+      sy += deltaY;
+        if (sx === dx && sy === dy) //Test Ending Move
+        return true;
+    } while(this.isEmpty(sx, sy));
+
+    return false;
   }
 
   isCorrectKnightMove(sx, sy, dx, dy) {
@@ -135,14 +147,9 @@ class Chess {
       sy += deltaY;
         if (sx === dx && sy === dy) //Test Ending Move
         return true;
+    } while(this.isEmpty(sx, sy));
 
-        if (this.chessFigureArray[sx][sy] != ' ')
-        return false;
-    } while(this.onMap(sx, sy));
-
-    return true;
-    
-  
+    return false;
   }
 
   isCorrectPawnMove(sx, sy, dx, dy) {
@@ -152,6 +159,12 @@ class Chess {
 
   onMap(x, y) {
     return (x >= 0 && x <= 7 && y >=0 && y <=7);
+  }
+
+  isEmpty(x, y) {
+    if(!this.onMap(x, y)) return false;
+
+    return this.chessFigureArray[x][y] === ' ';
   }
 
   markMoveFrom () {
@@ -178,11 +191,13 @@ class Chess {
 
 
   canMoveFrom (x,y) {
+    if (!this.onMap(x,y)) return false;
     return this.getColor(x,y) === this.moveClassColor;
   }
 
 
   canMoveTo (x,y) {
+    if (!this.onMap(x,y)) return false;
     if (this.chessFigureArray[x][y] === ' ') return true;
     return this.getColor(x,y) != this.moveClassColor;
   }
