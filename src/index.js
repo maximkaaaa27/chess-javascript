@@ -108,23 +108,11 @@ class Chess {
   }
 
   isCorrectQueenMove(sx, sy, dx, dy) {
-    return true;
+      return this.isCorrectLineMove(sx, sy, dx, dy, 'Q');
   }
 
   isCorrectBishopMove(sx, sy, dx, dy) {
-    let deltaX = Math.sign(dx - sx);
-    let deltaY = Math.sign(dy - sy);
-
-    if (Math.abs(deltaX) + Math.abs(deltaY) != 2) return false;
-
-    do {
-      sx += deltaX;
-      sy += deltaY;
-        if (sx === dx && sy === dy) //Test Ending Move
-        return true;
-    } while(this.isEmpty(sx, sy));
-
-    return false;
+    return this.isCorrectLineMove(sx, sy, dx, dy, 'B');
   }
 
   isCorrectKnightMove(sx, sy, dx, dy) {
@@ -137,11 +125,18 @@ class Chess {
   }
 
   isCorrectRookMove(sx, sy, dx, dy) {
+    return this.isCorrectLineMove(sx, sy, dx, dy, 'R');
+  }
+
+  isCorrectPawnMove(sx, sy, dx, dy) {
+    return true;
+  }
+
+  isCorrectLineMove(sx, sy, dx, dy, figure) {
     let deltaX = Math.sign(dx - sx);
     let deltaY = Math.sign(dy - sy);
-
-    if (Math.abs(deltaX) + Math.abs(deltaY) != 1) return false;
-
+    
+    if (!this.isCorrectLineDeltaMove(deltaX, deltaY, figure)) return false;
     do {
       sx += deltaX;
       sy += deltaY;
@@ -152,8 +147,28 @@ class Chess {
     return false;
   }
 
-  isCorrectPawnMove(sx, sy, dx, dy) {
-    return true;
+  isCorrectLineDeltaMove(deltaX, deltaY, figure) {
+    if (this.isRook(figure))
+      return this.isCorrectRookDelta(deltaX, deltaY);
+    if (this.isBishop(figure))
+      return this.isCorrectBishopDelta(deltaX, deltaY);
+    if (this.isQueen(figure))
+      return this.isCorrectQueenDelta();
+
+    return false;
+  }
+
+  isCorrectRookDelta(deltaX,deltaY) {
+      return Math.abs(deltaX) + Math.abs(deltaY) === 1;
+  }
+
+  isCorrectBishopDelta(deltaX,deltaY) {
+    return Math.abs(deltaX) + Math.abs(deltaY) === 2;
+    
+  }
+
+  isCorrectQueenDelta() {
+    return true;  
   }
 
 
