@@ -129,6 +129,18 @@ class Chess {
   }
 
   isCorrectPawnMove(sx, sy, dx, dy) {
+    if(this.getColor(sx,sy) === 'white')
+      return this.isCorrectWhitePawnMove(sx, sy, dx, dy);
+    if(this.getColor(sx,sy) === 'black')
+      return this.isCorrectBlackPawnMove(sx, sy, dx, dy);
+    return false;
+  }
+
+  isCorrectWhitePawnMove(sx, sy, dx, dy) {
+    return true;
+  }
+
+  isCorrectBlackPawnMove(sx, sy, dx, dy) {
     return true;
   }
 
