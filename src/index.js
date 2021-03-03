@@ -137,11 +137,38 @@ class Chess {
   }
 
   isCorrectWhitePawnMove(sx, sy, dx, dy) {
-    return true;
+    if (sy < 1 || sy > 6) 
+      return false;
+
+    if(this.isPawnPassant()) 
+      return true;
+
+    if(!this.isEmpty(dx, dy)) { // Это взятие?
+      if( Math.abs(dx - sx) != 1) // Один шаг влево/вправо
+        return false;
+      return (dy - sy === 1);
+    }
+
+    if (dx != sx)
+      return false;
+
+    if(dy - sy === 1)
+      return true;
+
+    if (dy -sy === 2) {
+        if(sy != 1) 
+          return false;
+        return this.isEmpty(sx, sy + 1);    
+    }
+      return false; 
   }
 
   isCorrectBlackPawnMove(sx, sy, dx, dy) {
     return true;
+  }
+
+  isPawnPassant() {
+    return false;
   }
 
   isCorrectLineMove(sx, sy, dx, dy, figure) {
