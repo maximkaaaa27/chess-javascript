@@ -8,6 +8,8 @@ class Chess {
     this.moveClassColor = 'white';
     this.moveFromX = '';
     this.moveFromY = '';
+    this.pawnAttackX = 1;
+    this.pawnAttackY = 5;
     this.chessFigureArray = [
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'], 
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
@@ -140,7 +142,7 @@ class Chess {
     if (sy < 1 || sy > 6) 
       return false;
 
-    if(this.isPawnPassant()) 
+    if(this.isPawnPassant(sx, sy, dx, dy)) 
       return true;
 
     if(!this.isEmpty(dx, dy)) { // Это взятие?
@@ -167,8 +169,14 @@ class Chess {
     return true;
   }
 
-  isPawnPassant() {
-    return false;
+  isPawnPassant(sx, sy, dx, dy) {
+    if (!(dx === this.pawnAttackX && dy === this.pawnAttackY))
+      return false;
+    if(sy != 4) // Взятие на проходе для белых пешек только с 4 горизонтали
+      return false;
+    if((dy - sy) != 1)
+      return false;
+    return (Math.abs(dx- sx) === 1);
   }
 
   isCorrectLineMove(sx, sy, dx, dy, figure) {
