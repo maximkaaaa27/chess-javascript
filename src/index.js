@@ -131,50 +131,50 @@ class Chess {
   }
 
   isCorrectPawnMove(sx, sy, dx, dy) {
+     if (sy < 1 || sy > 6) 
+      return false;
     if(this.getColor(sx,sy) === 'white')
-      return this.isCorrectWhitePawnMove(sx, sy, dx, dy);
+      return this.isCorrectSignPawnMove(sx, sy, dx, dy, 1);
     if(this.getColor(sx,sy) === 'black')
-      return this.isCorrectBlackPawnMove(sx, sy, dx, dy);
+      return this.isCorrectSignPawnMove(sx, sy, dx, dy, -1);
     return false;
   }
 
-  isCorrectWhitePawnMove(sx, sy, dx, dy) {
-    if (sy < 1 || sy > 6) 
-      return false;
+  isCorrectSignPawnMove(sx, sy, dx, dy, sign) {
 
-    if(this.isPawnPassant(sx, sy, dx, dy)) 
+    if(this.isPawnPassant(sx, sy, dx, dy, sign)) 
       return true;
 
     if(!this.isEmpty(dx, dy)) { // Это взятие?
       if( Math.abs(dx - sx) != 1) // Один шаг влево/вправо
         return false;
-      return (dy - sy === 1);
+      return (dy - sy === sign);
     }
 
     if (dx != sx)
       return false;
 
-    if(dy - sy === 1)
+    if(dy - sy === sign)
       return true;
 
-    if (dy -sy === 2) {
-        if(sy != 1) 
+    if (dy - sy === sign * 2) {
+        if(sy != 1 && sy != 6) 
           return false;
-        return this.isEmpty(sx, sy + 1);    
+        return this.isEmpty(sx, sy + sign);    
     }
       return false; 
   }
 
-  isCorrectBlackPawnMove(sx, sy, dx, dy) {
-    return true;
-  }
+  
 
-  isPawnPassant(sx, sy, dx, dy) {
+  isPawnPassant(sx, sy, dx, dy, sign) {
     if (!(dx === this.pawnAttackX && dy === this.pawnAttackY))
       return false;
-    if(sy != 4) // Взятие на проходе для белых пешек только с 4 горизонтали
+    if(sign === + 1 && sy != 4) // Взятие на проходе для белых пешек только с 4 горизонтали
       return false;
-    if((dy - sy) != 1)
+    if(sign === - 1 && sy != 3) // Взятие на проходе для черных пешек только с 3 горизонтали
+      return false;
+    if((dy - sy) != sign)
       return false;
     return (Math.abs(dx- sx) === 1);
   }
