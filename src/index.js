@@ -8,8 +8,8 @@ class Chess {
     this.moveClassColor = 'white';
     this.moveFromX = '';
     this.moveFromY = '';
-    this.pawnAttackX = 1;
-    this.pawnAttackY = 5;
+    this.pawnAttackX = -1;
+    this.pawnAttackY = -1;
     this.chessFigureArray = [
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'], 
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
@@ -349,14 +349,35 @@ class Chess {
 
   }
 
-  clickboxTo(x, y) {
-    this.chessFigureArray[x][y] = this.chessFigureArray[this.moveFromX][this.moveFromY];
+  clickboxTo(toX, toY) {
+    const fromFigure = this.chessFigureArray[this.moveFromX][this.moveFromY];
+    const toFigure = this.chessFigureArray[toX][toY];
+
+    this.chessFigureArray[toX][toY] = fromFigure;
     this.chessFigureArray[this.moveFromX][this.moveFromY] = ' ';
+
+    if(this.isPawn(fromFigure))
+      if(toX === this.pawnAttackX && toY === this.pawnAttackY) {
+        this.chessFigureArray[toX][toY - 1] = ' '; // for white Pawn
+      }
+
+    this.checkPawnAttack(fromFigure, toX, toY);
     this.clearTop();
     this.turnMove();
     this.markMoveFrom();
     this.showBoard();
     
+  }
+
+  checkPawnAttack(fromFigure, toX, toY) {
+    this.pawnAttackX = -1;
+    this.pawnAttackY = -1;
+    if(this.isPawn(fromFigure))
+      if(Math.abs(toY - this.moveFromY)) {
+        this.pawnAttackX = this.moveFromX;
+        this.pawnAttackY = (this.moveFromY + toY) / 2;
+      }
+
   }
 
   turnMove() {
