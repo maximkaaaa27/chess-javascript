@@ -356,11 +356,7 @@ class Chess {
     this.chessFigureArray[toX][toY] = fromFigure;
     this.chessFigureArray[this.moveFromX][this.moveFromY] = ' ';
 
-    if(this.isPawn(fromFigure))
-      if(toX === this.pawnAttackX && toY === this.pawnAttackY) {
-        this.chessFigureArray[toX][toY - 1] = ' '; // for white Pawn
-      }
-
+    
     this.checkPawnAttack(fromFigure, toX, toY);
     this.clearTop();
     this.turnMove();
@@ -370,6 +366,16 @@ class Chess {
   }
 
   checkPawnAttack(fromFigure, toX, toY) {
+
+    if(this.isPawn(fromFigure))
+      if(toX === this.pawnAttackX && toY === this.pawnAttackY) {
+        if (this.moveClassColor === 'white')
+          this.chessFigureArray[toX][toY - 1] = ' '; //for black Pawn
+        else
+          this.chessFigureArray[toX][toY + 1] = ' '; // for white Pawn
+      }
+
+
     this.pawnAttackX = -1;
     this.pawnAttackY = -1;
     if(this.isPawn(fromFigure))
