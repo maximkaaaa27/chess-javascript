@@ -352,8 +352,11 @@ class Chess {
   clickboxTo(toX, toY) {
     const fromFigure = this.chessFigureArray[this.moveFromX][this.moveFromY];
     const toFigure = this.chessFigureArray[toX][toY];
+    const pawnFigure = this.promotePawn(fromFigure, toY);
 
-    this.chessFigureArray[toX][toY] = fromFigure;
+
+
+    this.chessFigureArray[toX][toY] = pawnFigure ? pawnFigure : fromFigure;
     this.chessFigureArray[this.moveFromX][this.moveFromY] = ' ';
 
     
@@ -363,6 +366,25 @@ class Chess {
     this.markMoveFrom();
     this.showBoard();
     
+  }
+
+  promotePawn(fromFigure, toY) {
+    if (!this.isPawn(fromFigure)) return false;
+    if (!(toY === 7 || toY === 0)) return false; 
+    let figure;
+    do {
+    figure = prompt('Select figure to promote: Q R B N', 'Q');
+    } while (!(
+      this.isQueen(figure) ||
+      this.isRook(figure) ||
+      this.isBishop(figure) ||
+      this.isKnight(figure)
+    ));
+      if(this.moveClassColor === 'white')
+        fromFigure = figure.toUpperCase();
+      else
+        fromFigure = figure.toLowerCase();
+    return fromFigure;
   }
 
   checkPawnAttack(fromFigure, toX, toY) {
