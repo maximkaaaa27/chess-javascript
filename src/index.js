@@ -10,6 +10,8 @@ class Chess {
     this.moveFromY = '';
     this.pawnAttackX = -1;
     this.pawnAttackY = -1;
+    this.fromFigure = ' ';
+    this.toFigure = ' ';
     this.chessFigureArray = [
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'], 
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
@@ -46,10 +48,42 @@ class Chess {
 
 
   canMove(sx, sy, dx, dy) {
-    if (!this.canMoveFrom(sx, sy)) return false;
-    if (!this.canMoveTo(dx, dy)) return false;
-    if (!this.isCorrectMove(sx, sy, dx, dy)) return false;
+    if (!this.canMoveFrom(sx, sy)) 
+      return false;
+    if (!this.canMoveTo(dx, dy)) 
+      return false;
+    if (!this.isCorrectMove(sx, sy, dx, dy)) 
+      return false;
+    if (!this.isCheck(sx, sy, dx, dy))
       return true;
+    else 
+      return false;
+
+  }
+
+  isCheck(sx, sy, dx, dy) {
+    this.moveFigure(sx, sy, dx, dy);
+    const king = this.findFigure(this.moveClassColor === 'white' ? 'K' : 'k');
+    this.turnMove();
+    let canBeEaten = false;
+
+    for (let x = 0; x <= 7; x++)
+      for(let y = 0; y <= 7; y++)
+        if (this.getColor(x, y) === this.moveClassColor)
+          if(this.isCorrectMove(x, y, king.x, king.y))
+            canBeEaten = true;
+
+    this.turnMove();
+    this.backFigure(sx, sy, dx, dy);
+    return canBeEaten;
+  }
+
+  findFigure(figure) {
+    for (let x = 0; x <= 7; x++)
+      for (let y = 0; y <= 7; y++)
+        if (this.chessFigureArray[x][y] === figure)
+          return {x: x, y: y};
+    return {x: -1, y: -1};
   }
 
   isCorrectMove(sx, sy, dx, dy) {
@@ -75,7 +109,7 @@ class Chess {
       return this.isCorrectPawnMove (sx, sy, dx, dy);
     }    
          
-    return true;
+    return false;
   }
   
 
@@ -349,31 +383,39 @@ class Chess {
 
   }
 
+  moveFigure(sx, sy, dx, dy) {
+    this.fromFigure = this.chessFigureArray[sx][sy];
+    this.toFigure = this.chessFigureArray[dx][dy];
+    this.chessFigureArray[dx][dy] = this.fromFigure;
+    this.chessFigureArray[sx][sy] = ' ';
+  }
+
+  backFigure(sx, sy, dx, dy) {
+    this.chessFigureArray[sx][sy] = this.fromFigure;
+    this.chessFigureArray[dx][dy] = this.toFigure;
+  }
+
   clickboxTo(toX, toY) {
-    const fromFigure = this.chessFigureArray[this.moveFromX][this.moveFromY];
-    const toFigure = this.chessFigureArray[toX][toY];
-    const pawnFigure = this.promotePawn(fromFigure, toY);
-
-
-
-    this.chessFigureArray[toX][toY] = pawnFigure ? pawnFigure : fromFigure;
-    this.chessFigureArray[this.moveFromX][this.moveFromY] = ' ';
-
-    
-    this.checkPawnAttack(fromFigure, toX, toY);
+    this.moveFigure(this.moveFromX, this.moveFromY, toX, toY);
+    this.promotePawn(this.fromFigure, toX, toY); 
+    this.checkPawnAttack(this.fromFigure, toX, toY);
     this.clearTop();
     this.turnMove();
     this.markMoveFrom();
-    this.showBoard();
-    
+    this.showBoard();  
   }
 
-  promotePawn(fromFigure, toY) {
-    if (!this.isPawn(fromFigure)) return false;
-    if (!(toY === 7 || toY === 0)) return false; 
+  promotePawn(fromFigure, toX, toY) {
+
+    if (!this.isPawn(this.fromFigure))
+      return;
+    if (!(toY === 7 || toY === 0))
+      return;
+
     let figure;
+
     do {
-    figure = prompt('Select figure to promote: Q R B N', 'Q');
+      figure = prompt('Select figure to promote: Q R B N', 'Q');
     } while (!(
       this.isQueen(figure) ||
       this.isRook(figure) ||
@@ -381,10 +423,10 @@ class Chess {
       this.isKnight(figure)
     ));
       if(this.moveClassColor === 'white')
-        fromFigure = figure.toUpperCase();
+        figure = figure.toUpperCase();
       else
-        fromFigure = figure.toLowerCase();
-    return fromFigure;
+        figure = figure.toLowerCase();
+    this.chessFigureArray[toX][toY] = figure;
   }
 
   checkPawnAttack(fromFigure, toX, toY) {
