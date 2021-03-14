@@ -3,9 +3,11 @@ import './style.css';
 
 class Chess {
 
-  constructor(element) {
+  constructor(element, info) {
     this.el = element;
+    this.elInfo = info;
     this.moveClassColor = 'white';
+    this.possibleMoves = 0;
     this.moveFromX = '';
     this.moveFromY = '';
     this.pawnAttackX = -1;
@@ -54,28 +56,44 @@ class Chess {
       return false;
     if (!this.isCorrectMove(sx, sy, dx, dy)) 
       return false;
-    if (!this.isCheck(sx, sy, dx, dy))
+    if (!this.isCheckAfterMove(sx, sy, dx, dy))
       return true;
     else 
       return false;
 
   }
-
-  isCheck(sx, sy, dx, dy) {
+  isCheckAfterMove(sx, sy, dx, dy) {
     this.moveFigure(sx, sy, dx, dy);
-    const king = this.findFigure(this.moveClassColor === 'white' ? 'K' : 'k');
+    
     this.turnMove();
-    let canBeEaten = false;
+    let check = this.isCheck();
+    this.turnMove();
+    this.backFigure(sx, sy, dx, dy);
+    return check;
+  }
+
+
+  isCheck() {
+
+    const king = this.findFigure(this.moveClassColor === 'white' ? 'k' : 'K');
 
     for (let x = 0; x <= 7; x++)
       for(let y = 0; y <= 7; y++)
         if (this.getColor(x, y) === this.moveClassColor)
           if(this.isCorrectMove(x, y, king.x, king.y))
-            canBeEaten = true;
+            return true;
+    return false;
 
-    this.turnMove();
-    this.backFigure(sx, sy, dx, dy);
-    return canBeEaten;
+  }
+
+  isCheckMate () {
+    if (!this.isCheck(this.moveClassColor)) return false;
+    return this.possibleMoves === 0;
+  }
+
+  isStallmate() {
+    if (this.isCheck(this.moveClassColor)) return false;
+    return this.possibleMoves === 0;
   }
 
   findFigure(figure) {
@@ -264,11 +282,15 @@ class Chess {
   }
 
   markMoveFrom () {
+    this.possibleMoves = 0;
     for (let sx = 0; sx <= 7; sx++) {
         for(let sy = 0; sy <= 7; sy++) {
           for (let dx = 0; dx <= 7; dx++) {
             for(let dy = 0; dy <= 7; dy++) {
-            if (this.canMove(sx, sy, dx, dy)) this.topBoardArray[sx][sy] = 1;
+            if (this.canMove(sx, sy, dx, dy)) { 
+              this.topBoardArray[sx][sy] = 1;
+              this.possibleMoves ++;
+            }
           }
         } 
       }
@@ -347,7 +369,23 @@ class Chess {
     this.el.innerHTML = board;
     this.addEventTable();
 
+    this.showInfo();
+  }
 
+  showInfo () {
+    let infoHtml = `Turns: ${this.moveClassColor}`;
+    this.turnMove();
+    if(this.isCheckMate())
+      infoHtml += ` CHEСKMATE ! 💪`;
+    else
+     if (this.isStallmate())
+      infoHtml += ` STALLMATE??? 🤔`;
+    else
+     if (this.isCheck())
+      infoHtml += ` CHECK!!! ☝`;
+    this.turnMove();
+ 
+    this.elInfo.innerHTML = infoHtml;
   }
 
 
@@ -455,7 +493,8 @@ class Chess {
   }
 
 }
-
-new Chess(document.querySelector('#board'));
+const board = document.querySelector('#board');
+const info = document.querySelector('#info');
+new Chess(board, info);
 
 window.Chess = Chess;
