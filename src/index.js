@@ -8,6 +8,9 @@ class Chess {
     this.elInfo = info;
     this.moveClassColor = 'white';
     this.possibleMoves = 0;
+    this.savePawnX = -1;
+    this.savePawnY = -1;
+    this.savePawnFigure = ' ';
     this.moveFromX = '';
     this.moveFromY = '';
     this.pawnAttackX = -1;
@@ -426,18 +429,21 @@ class Chess {
     this.toFigure = this.chessFigureArray[dx][dy];
     this.chessFigureArray[dx][dy] = this.fromFigure;
     this.chessFigureArray[sx][sy] = ' ';
+    this.movePawnAttack(this.fromFigure, dx, dy);
   }
 
   backFigure(sx, sy, dx, dy) {
     this.chessFigureArray[sx][sy] = this.fromFigure;
     this.chessFigureArray[dx][dy] = this.toFigure;
+    this.backPawnAttack();
   }
 
   clickboxTo(toX, toY) {
     this.moveFigure(this.moveFromX, this.moveFromY, toX, toY);
     this.promotePawn(this.fromFigure, toX, toY);
-    this.movePawnAttack(this.fromFigure, toX, toY);
+
     this.checkPawnAttack(this.fromFigure, toX, toY);
+
     this.clearTop();
     this.turnMove();
     this.markMoveFrom();
@@ -467,19 +473,30 @@ class Chess {
         figure = figure.toLowerCase();
     this.chessFigureArray[toX][toY] = figure;
   }
+
+
   movePawnAttack(fromFigure, toX, toY) {
     if(this.isPawn(fromFigure))
     if(toX === this.pawnAttackX && toY === this.pawnAttackY) {
-      if (this.moveClassColor === 'white')
-        this.chessFigureArray[toX][toY - 1] = ' '; //for black Pawn
-      else
-        this.chessFigureArray[toX][toY + 1] = ' '; // for white Pawn
+      let y = this.moveClassColor === 'white' ? toY - 1 : toY + 1;
+      this.savePawnFigure = this.chessFigureArray[toX][y];
+      this.savePawnX = toX;
+      this.savePawnY = y;
+      this.chessFigureArray[toX][y] = ' ';
     }
   }
+
+  backPawnAttack() {
+    if (this.savePawnX == -1) return;
+        this.chessFigureArray[this.savePawnX][this.savePawnY] = this.savePawnFigure; 
+    
+  }
+  
 
   checkPawnAttack(fromFigure, toX, toY) {
     this.pawnAttackX = -1;
     this.pawnAttackY = -1;
+    this.savePawnX = -1;
     if(this.isPawn(fromFigure))
       if(Math.abs(toY - this.moveFromY)) {
         this.pawnAttackX = this.moveFromX;
