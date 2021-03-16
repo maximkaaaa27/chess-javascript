@@ -17,9 +17,9 @@ class Chess {
     this.chessFigureArray = [
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'], 
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
-      ['B', 'P', ' ', ' ', ' ', ' ', 'p', 'b'],
+      ['B', 'P', ' ', 'p', ' ', ' ', ' ', 'b'],
       ['Q', 'P', ' ', ' ', ' ', ' ', 'p', 'q'],
-      ['K', 'P', ' ', ' ', ' ', ' ', 'p', 'k'],
+      ['K', 'P', ' ', ' ', 'k', ' ', 'p', ' '],
       ['B', 'P', ' ', ' ', ' ', ' ', 'p', 'b'],
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'],
@@ -435,7 +435,8 @@ class Chess {
 
   clickboxTo(toX, toY) {
     this.moveFigure(this.moveFromX, this.moveFromY, toX, toY);
-    this.promotePawn(this.fromFigure, toX, toY); 
+    this.promotePawn(this.fromFigure, toX, toY);
+    this.movePawnAttack(this.fromFigure, toX, toY);
     this.checkPawnAttack(this.fromFigure, toX, toY);
     this.clearTop();
     this.turnMove();
@@ -466,18 +467,17 @@ class Chess {
         figure = figure.toLowerCase();
     this.chessFigureArray[toX][toY] = figure;
   }
+  movePawnAttack(fromFigure, toX, toY) {
+    if(this.isPawn(fromFigure))
+    if(toX === this.pawnAttackX && toY === this.pawnAttackY) {
+      if (this.moveClassColor === 'white')
+        this.chessFigureArray[toX][toY - 1] = ' '; //for black Pawn
+      else
+        this.chessFigureArray[toX][toY + 1] = ' '; // for white Pawn
+    }
+  }
 
   checkPawnAttack(fromFigure, toX, toY) {
-
-    if(this.isPawn(fromFigure))
-      if(toX === this.pawnAttackX && toY === this.pawnAttackY) {
-        if (this.moveClassColor === 'white')
-          this.chessFigureArray[toX][toY - 1] = ' '; //for black Pawn
-        else
-          this.chessFigureArray[toX][toY + 1] = ' '; // for white Pawn
-      }
-
-
     this.pawnAttackX = -1;
     this.pawnAttackY = -1;
     if(this.isPawn(fromFigure))
