@@ -4,25 +4,36 @@ import './style.css';
 class Chess {
 
   constructor(element, info) {
+
     this.el = element;
     this.elInfo = info;
+
     this.moveClassColor = 'white';
     this.possibleMoves = 0;
+
     this.savePawnX = -1;
     this.savePawnY = -1;
-    this.savePawnFigure = ' ';
-    this.moveFromX = '';
-    this.moveFromY = '';
     this.pawnAttackX = -1;
     this.pawnAttackY = -1;
+    this.savePawnFigure = ' ';
+
+    this.moveFromX = '';
+    this.moveFromY = '';
+
     this.fromFigure = ' ';
     this.toFigure = ' ';
+
+    this.canWhiteCastleLeft = true;
+    this.canWhiteCastleRight = true;
+    this.canBlackCastleLeft = true;
+    this.canBlackCastleRight = true;
+
     this.chessFigureArray = [
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'], 
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
-      ['B', 'P', ' ', 'p', ' ', ' ', ' ', 'b'],
+      ['B', 'P', ' ', ' ', ' ', ' ', 'p', 'b'],
       ['Q', 'P', ' ', ' ', ' ', ' ', 'p', 'q'],
-      ['K', 'P', ' ', ' ', 'k', ' ', 'p', ' '],
+      ['K', 'P', ' ', ' ', ' ', ' ', 'p', 'k'],
       ['B', 'P', ' ', ' ', ' ', ' ', 'p', 'b'],
       ['N', 'P', ' ', ' ', ' ', ' ', 'p', 'n'],
       ['R', 'P', ' ', ' ', ' ', ' ', 'p', 'r'],
@@ -38,6 +49,7 @@ class Chess {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     ];
+
     this.showBoard();
 
   }
@@ -63,14 +75,16 @@ class Chess {
       return true;
     else 
       return false;
-
   }
+
+
   isCheckAfterMove(sx, sy, dx, dy) {
     this.moveFigure(sx, sy, dx, dy);
     
-    this.turnMove();
+
     let check = this.isCheck();
-    this.turnMove();
+
+
     this.backFigure(sx, sy, dx, dy);
     return check;
   }
@@ -78,11 +92,11 @@ class Chess {
 
   isCheck() {
 
-    const king = this.findFigure(this.moveClassColor === 'white' ? 'k' : 'K');
+    const king = this.findFigure(this.moveClassColor === 'white' ? 'K' : 'k');
 
     for (let x = 0; x <= 7; x++)
       for(let y = 0; y <= 7; y++)
-        if (this.getColor(x, y) === this.moveClassColor)
+        if (this.getColor(x, y) != this.moveClassColor)
           if(this.isCorrectMove(x, y, king.x, king.y))
             return true;
     return false;
@@ -160,9 +174,95 @@ class Chess {
 
 
   isCorrectKingMove(sx, sy, dx, dy) {
-    if (Math.abs(dx -sx) <= 1 && Math.abs(dy-sy) <= 1) return true;
-    return false;
+    if (Math.abs(dx -sx) <= 1 && Math.abs(dy-sy) <= 1)
+      return true;
+    return this.canCastle(sx, sy, dx, dy);
   }
+
+  canCastle (sx, sy,dx, dy) {
+    const figure = this.chessFigureArray[sx][sy];
+
+    if (figure === 'K' && sx === 4 && sy === 0 && dx === 6 && dy === 0) 
+      return this.canWhiteCR();
+
+    if (figure === 'K' && sx === 4 && sy === 0 && dx === 2 && dy === 0) 
+      return this.canWhiteCL();
+
+    if (figure === 'k' && sx === 4 && sy === 7 && dx === 6 && dy === 7) 
+      return this.canBlackCR();
+
+    if (figure === 'k' && sx === 4 && sy === 7 && dx === 2 && dy === 7) 
+      return this.canBlackCL();
+  }
+
+  canWhiteCR() {
+    if (!this.canWhiteCastleRight)
+      return false;
+    if (this.isCheck())
+      return false;
+    if(this.isCheckAfterMove(4, 0, 5, 0))
+      return false;
+    if(!this.isEmpty(5,0))
+      return false;
+    if(!this.isEmpty(6,0))
+      return false;
+    if(this.chessFigureArray[7][0] != 'R')
+      return false;
+    return true;
+  }
+
+  canWhiteCL() {
+    if (!this.canWhiteCastleLeft)
+      return false;
+    if (this.isCheck())
+      return false;
+    if(this.isCheckAfterMove(4, 0, 3, 0))
+      return false;
+    if(!this.isEmpty(3,0))
+      return false;
+    if(!this.isEmpty(2,0))
+      return false;
+    if(!this.isEmpty(1,0))
+      return false;
+    if(this.chessFigureArray[0][0] != 'R')
+      return false;
+    return true;
+  }
+
+  canBlackCR() {
+    if (!this.canBlackCastleRight)
+      return false;
+    if (this.isCheck())
+      return false;
+    if(this.isCheckAfterMove(4, 7, 5, 7))
+      return false;
+    if(!this.isEmpty(5,7))
+      return false;
+    if(!this.isEmpty(6,7))
+      return false;
+    if(this.chessFigureArray[7][7] != 'r')
+      return false;
+    return true;
+  }
+
+  canBlackCL() {
+    if (!this.canBlackCastleLeft)
+      return false;
+    if (this.isCheck())
+      return false;
+    if(this.isCheckAfterMove(4, 7, 3, 7))
+      return false;
+    if(!this.isEmpty(3,7))
+      return false;
+    if(!this.isEmpty(2,7))
+      return false;
+    if(!this.isEmpty(1,7))
+      return false;
+    if(this.chessFigureArray[0][7] != 'r')
+      return false;
+    return true;
+  }
+  
 
   isCorrectQueenMove(sx, sy, dx, dy) {
       return this.isCorrectLineMove(sx, sy, dx, dy, 'Q');
@@ -280,7 +380,6 @@ class Chess {
 
   isEmpty(x, y) {
     if(!this.onMap(x, y)) return false;
-
     return this.chessFigureArray[x][y] === ' ';
   }
 
@@ -377,7 +476,7 @@ class Chess {
 
   showInfo () {
     let infoHtml = `Turns: ${this.moveClassColor}`;
-    this.turnMove();
+
     if(this.isCheckMate())
       infoHtml += ` CHEСKMATE ! 💪`;
     else
@@ -386,7 +485,6 @@ class Chess {
     else
      if (this.isCheck())
       infoHtml += ` CHECK!!! ☝`;
-    this.turnMove();
  
     this.elInfo.innerHTML = infoHtml;
   }
@@ -441,13 +539,60 @@ class Chess {
   clickboxTo(toX, toY) {
     this.moveFigure(this.moveFromX, this.moveFromY, toX, toY);
     this.promotePawn(this.fromFigure, toX, toY);
-
     this.checkPawnAttack(this.fromFigure, toX, toY);
+
+    this.updateCastleFlags(this.moveFromX, this.moveFromY, toX, toY);
+    this.moveCastleRook(this.moveFromX, this.moveFromY, toX, toY);
 
     this.clearTop();
     this.turnMove();
+
     this.markMoveFrom();
     this.showBoard();  
+  }
+
+  moveCastleRook(moveFromX, moveFromY, toX, toY) {
+    if (!this.isKing(this.chessFigureArray[toX][toY])) return;
+    if (Math.abs(toX - moveFromX) != 2) return;
+    if (toX === 6 && toY === 0) {
+      this.chessFigureArray[7][0] = ' ';
+      this.chessFigureArray[5][0] = 'R';
+    }
+    if (toX === 2 && toY === 0) {
+      this.chessFigureArray[0][0] = ' ';
+      this.chessFigureArray[3][0] = 'R';
+    }
+    if (toX === 6 && toY === 7) {
+      this.chessFigureArray[7][7] = ' ';
+      this.chessFigureArray[5][7] = 'r';
+    }
+    if (toX === 2 && toY === 7) {
+      this.chessFigureArray[0][7] = ' ';
+      this.chessFigureArray[3][7] = 'r';
+    }
+  }
+
+  updateCastleFlags(fromX, fromY, toX, toY) {
+
+    const figure = this.chessFigureArray[toX][toY];
+
+    if (figure === 'K') {
+      this.canWhiteCastleLeft = false;
+      this.canWhiteCastleRight = false;
+    }
+    if (figure === 'k') {
+      this.canBlackCastleLeft = false;
+      this.canBlackCastleRight = false;
+    }
+    if (figure === 'R' && fromX === 0 && fromY === 0)
+      this.canWhiteCastleLeft = false;
+    if (figure === 'R' && fromX === 7 && fromY === 0)
+      this.canWhiteCastleRight = false;
+
+    if (figure === 'r' && fromX === 0 && fromY === 7)
+      this.canBlackCastleLeft = false;
+    if (figure === 'r' && fromX === 7 && fromY === 7)
+      this.canBlackCastleRight = false;
   }
 
   promotePawn(fromFigure, toX, toY) {
@@ -491,7 +636,7 @@ class Chess {
         this.chessFigureArray[this.savePawnX][this.savePawnY] = this.savePawnFigure; 
     
   }
-  
+
 
   checkPawnAttack(fromFigure, toX, toY) {
     this.pawnAttackX = -1;
@@ -510,6 +655,7 @@ class Chess {
   }
 
 }
+
 const board = document.querySelector('#board');
 const info = document.querySelector('#info');
 new Chess(board, info);
