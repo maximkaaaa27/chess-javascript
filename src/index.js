@@ -179,7 +179,7 @@ class Chess {
     return this.canCastle(sx, sy, dx, dy);
   }
 
-  canCastle (sx, sy,dx, dy) {
+  canCastle (sx, sy, dx, dy) {
     const figure = this.chessFigureArray[sx][sy];
 
     if (figure === 'K' && sx === 4 && sy === 0 && dx === 6 && dy === 0) 
@@ -542,7 +542,7 @@ class Chess {
     this.checkPawnAttack(this.fromFigure, toX, toY);
 
     this.updateCastleFlags(this.moveFromX, this.moveFromY, toX, toY);
-    this.moveCastleRook(this.moveFromX, this.moveFromY, toX, toY);
+    this.moveCastleRook(this.moveFromX, toX, toY);
 
     this.clearTop();
     this.turnMove();
@@ -551,7 +551,7 @@ class Chess {
     this.showBoard();  
   }
 
-  moveCastleRook(moveFromX, moveFromY, toX, toY) {
+  moveCastleRook(moveFromX, toX, toY) {
     if (!this.isKing(this.chessFigureArray[toX][toY])) return;
     if (Math.abs(toX - moveFromX) != 2) return;
     if (toX === 6 && toY === 0) {
@@ -597,7 +597,7 @@ class Chess {
 
   promotePawn(fromFigure, toX, toY) {
 
-    if (!this.isPawn(this.fromFigure))
+    if (!this.isPawn(fromFigure))
       return;
     if (!(toY === 7 || toY === 0))
       return;
